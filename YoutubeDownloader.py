@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import * 
-from pytubefix import YouTube
+import yt_dlp
 from tkinter import messagebox, filedialog
 
 import ctypes #set the icon 
@@ -41,10 +41,22 @@ def DownloadVideo():
     Youtube_link = video_link.get()
     download_folder = download_path.get()
 
-    getVid = YouTube(Youtube_link)
-    videoStream = getVid.streams.get_highest_resolution() # with pytube bakage you can do some changes in it like get_lowest_resolution() and other things 
-    videoStream.download(download_folder)
-    messagebox.showinfo("Success", "The Video Downloaded Successfully to \n" +download_folder) 
+    if not Youtube_link or not download_folder:
+        messagebox.showerror("Error", "Please provide both the YouTube link and download path.")
+        return
+
+    ydl_opts = {
+        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best', # Best quality available merged with audio
+        'outtmpl': f'{download_folder}/%(title)s.%(ext)s', # Save to the selected folder
+        'merge_output_format': 'mp4',
+    }
+    
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([Youtube_link])
+        messagebox.showinfo("Success", "The Video Downloaded Successfully to \n" + download_folder)
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to download video: {str(e)}") 
 
 destination_label = Label(root, text="Select Path: ", bg= "Gray")
 destination_label.grid(row=3, column=0, padx=15, pady=15)
