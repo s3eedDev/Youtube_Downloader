@@ -2,6 +2,16 @@ import tkinter as tk
 from tkinter import * 
 import yt_dlp
 from tkinter import messagebox, filedialog
+import sys
+import os
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 import ctypes #set the icon 
 myapp = 'mycompany.myproduct.subproduct.version'
@@ -13,7 +23,7 @@ root.geometry("800x300")
 root.resizable(False,False)
 root.title("Youtube Downloader")
 root.config(background="#36454F")
-img = PhotoImage(file="Youtube.png")
+img = PhotoImage(file=resource_path("Youtube.png"))
 root.iconphoto(False,img)
 
 
